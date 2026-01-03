@@ -3,21 +3,37 @@ import streamlit as st
 # Cargar provider y keys desde secrets
 try:
     api_provider = st.secrets["API_PROVIDER"]
-    if api_provider == "grok":
-        from openai import OpenAI
+    # Cargar provider y keys desde secrets
+try:
+    api_provider = st.secrets["API_PROVIDER"].lower()
+except KeyError:
+    st.error("Falta API_PROVIDER en Streamlit Secrets. Añade API_PROVIDER = 'grok' o 'gemini'")
+    st.stop()
+
+# Configuración condicional según el provider
+if api_provider == "grok":
+    from openai import OpenAI
+    try:
         api_key = st.secrets["GROK_API_KEY"]
         model_name = st.secrets["GROK_MODEL"]
-        client = OpenAI(api_key=api_key, base_url="https://api.x.ai/v1")
-    elif api_provider == "gemini":
-import google.generativeai as genai
+    except KeyError as e:
+        st.error(f"Falta {e} en Secrets para Grok")
+        st.stop()
+    client = OpenAI(api_key=api_key, base_url="https://api.x.ai/v1")
+
+elif api_provider == "gemini":
+    import google.generativeai as genai  # ← Solo se importa si es Gemini
+    try:
         api_key = st.secrets["GOOGLE_API_KEY"]
-        model_name = st.secrets["GEMINI_MODEL"]
-        genai.configure(api_key=api_key)
-        client = genai.GenerativeModel(model_name)
-    else:
-        raise ValueError("API_PROVIDER debe ser 'grok' o 'gemini'")
-except KeyError as e:
-    st.error(f"Falta configuración en Secrets: {e}. Añade API_PROVIDER y las keys correspondientes.")
+        model_name = st.secrets.get("GEMINI_MODEL", "gemini-1.5-flash")
+    except KeyError as e:
+        st.error(f"Falta {e} en Secrets para Gemini")
+        st.stop()
+    genai.configure(api_key=api_key)
+    client = genai.GenerativeModel(model_name)
+
+else:
+    st.error("API_PROVIDER debe ser 'grok' o 'gemini'")
     st.stop()
 
 # Diccionario de dilemas canónicos
