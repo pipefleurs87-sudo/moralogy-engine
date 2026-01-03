@@ -1,4 +1,7 @@
-import streamlit as st
+import sys
+if sys.version_info >= (3, 13):
+    import warnings
+    warnings.filterwarnings('ignore', category=DeprecationWarning)import streamlit as st
 import google.generativeai as genai
 import plotly.graph_objects as go
 import json
