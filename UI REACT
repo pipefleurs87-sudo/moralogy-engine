@@ -1,3 +1,0 @@
-npm create vite@latest ui -- --template react-ts
-cd ui
-npm install
