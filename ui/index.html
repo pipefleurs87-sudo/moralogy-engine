@@ -1,75 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Moralogy Engine</title>
+<meta charset="UTF-8" />
+<title>Morology Engine</title>
 
-  <!-- Plotly -->
-  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+<!-- Plotly -->
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 
-  <link rel="stylesheet" href="style.css" />
+<style>
+body {
+  background-color: #020617;
+  color: #e5e7eb;
+  font-family: system-ui;
+}
+.divine-safelock {
+  animation: pulse 3s infinite;
+}
+@keyframes pulse {
+  0% { opacity: 0.6 }
+  50% { opacity: 1 }
+  100% { opacity: 0.6 }
+}
+</style>
 </head>
 
-<body class="bg-slate-900 text-slate-100 min-h-screen">
+<body class="p-6">
 
-  <!-- Safelock Header -->
-  <header class="p-6 text-center divine-safelock">
-    <h1 class="text-4xl font-extrabold text-emerald-400 tracking-wide">
-      MORALOGY ENGINE
-    </h1>
-    <p class="mt-2 text-sm opacity-70">
-      Deterministic Moral Reasoning System
-    </p>
-    <p id="safelock-status" class="mt-4 text-xs uppercase tracking-widest">
-      Safelock: STABLE
-    </p>
-  </header>
+<header class="text-center divine-safelock mb-6">
+  <h1 class="text-3xl font-bold text-emerald-400">MORALOGY ENGINE</h1>
+  <p class="opacity-70">Deterministic Moral Reasoning System</p>
+</header>
 
-  <!-- Input -->
-  <section class="p-6 max-w-4xl mx-auto">
-    <textarea
-      id="prompt"
-      class="w-full h-32 p-4 bg-slate-800 rounded border border-slate-700 focus:outline-none focus:border-emerald-400"
-      placeholder="Describe the moral dilemma..."
-    ></textarea>
+<section class="mb-6">
+  <textarea id="prompt"
+    class="w-full p-3 bg-slate-800 rounded"
+    placeholder="Enter moral dilemma..."></textarea>
 
-    <button
-      onclick="runEvaluation()"
-      class="mt-4 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 rounded font-semibold"
-    >
-      Evaluate
-    </button>
-  </section>
-
-  <!-- Visual Outputs -->
-  <section class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 max-w-6xl mx-auto">
-
-    <div class="panel">
-      <h2 class="panel-title">Safelock</h2>
-      <div id="safelock"></div>
-    </div>
-
-    <div class="panel">
-      <h2 class="panel-title">Consequence Field</h2>
-      <div id="consequence"></div>
-    </div>
-
-    <div class="panel">
-      <h2 class="panel-title">Moral Chromatic Map</h2>
-      <div id="chromatic"></div>
-    </div>
-
-    <div class="panel">
-      <h2 class="panel-title">Verdict</h2>
-      <div id="verdict" class="typing"></div>
-      <div id="notes" class="mt-4 text-xs opacity-80"></div>
-    </div>
-
-  </section>
-
-  <script src="app.js"></script>
-</body>
-</html>
+  <button onclick="runEvaluation()"
+    class="mt-4 px-6 py-2 bg-
