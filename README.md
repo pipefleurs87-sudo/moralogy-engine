@@ -1,4 +1,27 @@
-## Epistemic Status
+# Moralogy Engine
+
+An epistemic prototype for traceable, non-omnipotent moral deliberation in AI systems.
+
+## Publications
+
+This project is formally described and archived in the following Zenodo records (both authored by pipefleurs87-sudo):
+
+- **Moralogy Engine – Core Framework and Epistemic Principles**  
+  DOI: [10.5281/zenodo.18099638](https://doi.org/10.5281/zenodo.18099638)
+
+- **Moralogy Engine – Technical Implementation and Prototype**  
+  DOI: [10.5281/zenodo.18098648](https://doi.org/10.5281/zenodo.18098648)
+
+These publications provide the complete theoretical foundation, architectural details, and justification of design decisions (including the Divine Safelock, agency-based damage metrics, and deliberate entropy management).
+
+## License
+
+This repository uses a custom proprietary license that permits free use for **educational, academic, and non-commercial research purposes only**.  
+All commercial rights are reserved by the author.
+
+See the full license in the [LICENSE](LICENSE) file.
+
+For commercial use or any questions, please contact the author.## Epistemic Status
 
 **Project Type:** Epistemic Prototype  
 **Claim Scope:** Deliberation without moral closure  
