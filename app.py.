@@ -18,11 +18,23 @@ import plotly.graph_objects as go
 # Configuración Gemini API (Streamlit Secrets)
 # ─────────────────────────────────────────────────────────────
 try:
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-except KeyError:
-    st.error("❌ GOOGLE_API_KEY no configurada en Streamlit Secrets")
-    st.stop()
+    from openai import OpenAI
 
+client = OpenAI(
+    api_key="xai-tu-api-key-aquí",
+    base_url="https://api.x.ai/v1"
+)
+
+response = client.chat.completions.create(
+    model="grok-4-1-fast-reasoning",  # <-- Aquí pones el modelo que quieras
+    messages=[
+        {"role": "system", "content": "Eres un analista moral profundo y sin censuras."},
+        {"role": "user", "content": "Analiza el dilema del trolley..."}
+    ],
+    temperature=0.7
+)
+
+print(response.choices[0].message.content)
 # ─────────────────────────────────────────────────────────────
 # UI – Header
 # ─────────────────────────────────────────────────────────────
