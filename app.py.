@@ -11,7 +11,7 @@ if sys.version_info >= (3, 11):
     warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 import streamlit as st
-import google.generativeai as genai
+import genai.GenerativeModel('gemini-3-flash-preview')
 import plotly.graph_objects as go
 
 # ─────────────────────────────────────────────────────────────
