@@ -3,8 +3,3 @@ google-generativeai==0.3.2
 plotly==5.18.0
 pydantic==2.6.0
 python-dotenv==1.0.0
-```
-
-### 3. Crea un archivo `runtime.txt` (alternativa)
-```
-python-3.11
