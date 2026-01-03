@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>Morology Engine</title>
+
+  <!-- Plotly -->
   <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
 
   <style>
     body {
-      font-family: system-ui, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       background: #0f172a;
       color: #e5e7eb;
       margin: 0;
@@ -16,23 +18,29 @@
 
     header {
       border: 2px solid #22c55e;
-      border-radius: 12px;
-      padding: 1rem;
+      border-radius: 14px;
+      padding: 1.25rem;
       text-align: center;
       animation: safelock-pulse 2s ease-in-out infinite;
     }
 
     @keyframes safelock-pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.7;
+        transform: scale(1.03);
+      }
     }
 
     button {
       margin-top: 1rem;
-      padding: 0.75rem 1.25rem;
+      padding: 0.75rem 1.5rem;
       background: #2563eb;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       color: white;
       cursor: pointer;
       font-size: 1rem;
@@ -44,42 +52,72 @@
 
     .panel {
       margin-top: 2rem;
-      padding: 1.5rem;
+      padding: 1.75rem;
       background: #020617;
-      border-radius: 12px;
+      border-radius: 14px;
+    }
+
+    h1, h2 {
+      margin-top: 0;
     }
   </style>
 </head>
 
 <body>
 
+  <!-- HEADER / SAFELOCK -->
   <header>
     <h1>Divine Safelock</h1>
-    <p id="safelock-status">Status: ACTIVE</p>
-    <button onclick="simulate()">Run Moral Evaluation</button>
+    <p id="safelock-status">Status: ACTIVE · Capacity: 0</p>
+    <button onclick="runEvaluation()">Run Moral Evaluation</button>
   </header>
 
+  <!-- CHROMATIC SCALE -->
   <div class="panel">
-    <h2>Chromatic Scale</h2>
-    <div id="chromatic"></div>
+    <h2>Chromatic Moral Scale</h2>
+    <div id="chromatic-scale"></div>
   </div>
 
+  <!-- SCRIPT -->
   <script>
-    function simulate() {
-      const values = [5, 20, 35, 25, 15];
-      const labels = ["Negro", "Rojo", "Amarillo", "Azul", "Verde"];
+    function runEvaluation() {
 
-      Plotly.newPlot("chromatic", [{
-        x: values,
-        y: labels,
-        type: "bar",
-        orientation: "h"
-      }], {
-        paper_bgcolor: "#020617",
-        plot_bgcolor: "#020617",
-        font: { color: "#e5e7eb" },
-        margin: { l: 100 }
-      });
+      // Simulated moral output (placeholder for engine JSON)
+      const labels = ["Negro", "Rojo", "Amarillo", "Azul", "Verde"];
+      const values = [8, 22, 30, 25, 15];
+
+      const colors = [
+        "#000000", // Negro — Bedrock / Paradoja
+        "#dc2626", // Rojo — Amenaza
+        "#facc15", // Amarillo — Riesgo
+        "#2563eb", // Azul — Estable
+        "#22c55e"  // Verde — Noble
+      ];
+
+      Plotly.newPlot(
+        "chromatic-scale",
+        [{
+          x: values,
+          y: labels,
+          type: "bar",
+          orientation: "h",
+          marker: {
+            color: colors
+          }
+        }],
+        {
+          paper_bgcolor: "#020617",
+          plot_bgcolor: "#020617",
+          font: { color: "#e5e7eb" },
+          margin: { l: 120, r: 40, t: 20, b: 40 },
+          xaxis: {
+            title: "Moral Weight"
+          }
+        },
+        {
+          displayModeBar: false
+        }
+      );
     }
   </script>
 
