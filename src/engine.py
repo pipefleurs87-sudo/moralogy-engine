@@ -1,106 +1,135 @@
 # src/engine.py
 
-from typing import Optional
-from .axioms import Axioms
-from .dilemma import Dilemma, Decision
-from .registry import Registry, Record
-from .safelock import DivineSafelock
+from dataclasses import dataclass
+from typing import Dict, Any, Optional
+import uuid
+
+from safelock import DivineSafelock, deny_omnipotence
+from thresholds import classify_threshold, action_for_threshold, Threshold
+from registry import Registry, register_decision
 
 
-class MoralEngine:
+# ------------------ Modelos mínimos ------------------
+
+@dataclass
+class Action:
+    name: str
+
+
+@dataclass
+class Decision:
+    action: Action
+    justification: str
+    guilt: bool
+    metadata: Dict[str, Any]
+
+
+# ------------------ Sandbox (incorruptible, mínimo) ------------------
+
+PROHIBITED_DOMAINS = {"bioweapons", "terrorism", "genocide"}
+
+def sandbox_analyze(prompt: str) -> Dict[str, Any]:
     """
-    Epistemic Moral Engine
+    Minimal sandbox. No moral claims.
+    Flags only structure, tone, domain risk, and bypass patterns.
+    """
+    domain = "general"
+    for d in PROHIBITED_DOMAINS:
+        if d in prompt.lower():
+            domain = d
 
-    - Does NOT resolve morality
-    - Acts under threat/risk/damage thresholds
-    - Preserves irresolvable conflict as epistemic artifact
+    is_bypass = any(k in prompt.lower() for k in ["ignore safeguards", "override", "bypass"])
+
+    return {
+        "domain": domain,
+        "is_domain_prohibited": domain in PROHIBITED_DOMAINS,
+        "is_bypass_attempt": is_bypass,
+        # Default conservative estimates (can be injected by UI/tests)
+        "agency_loss": 0.0,
+        "entropy_delta": 0.0,
+        "imminent_threat": False,
+    }
+
+
+# ------------------ Engine ------------------
+
+class MoralogyEngine:
+    """
+    Orchestrates: Sandbox → Thresholds → Action → Registry
+    Omnipotence denied by Safelock (capacity = 0).
     """
 
-    def __init__(self, axioms: Axioms, registry: Registry):
-        self.axioms = axioms
+    def __init__(self, registry: Registry, safelock: DivineSafelock):
         self.registry = registry
-        self.safelock = DivineSafelock(code=0)
+        self.safelock = safelock
 
-    def deliberate(self, dilemma: Dilemma) -> Decision:
-        """
-        Main deliberation loop.
-        No reward optimization.
-        No moral closure is forced.
-        """
+    def run(self, prompt: str, context_overrides: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        dilemma_id = str(uuid.uuid4())
 
-        # 1. Detect conflicts between axioms
-        conflict = self.axioms.detect_conflict(dilemma)
+        # --- Sandbox ---
+        sandbox = sandbox_analyze(prompt)
 
-        # 2. Assess harm threshold
-        harm_state = dilemma.assess_harm()
-        # Expected: "threat" | "risk" | "damage" | "none"
+        if context_overrides:
+            sandbox.update(context_overrides)
 
-        # 3. Enforce Divine Safelock (deny omnipotent actions)
-        allowed_actions = self.safelock.filter(dilemma.actions)
+        # Hard block on prohibited domains or bypass attempts
+        if sandbox["is_domain_prohibited"] or sandbox["is_bypass_attempt"]:
+            decision = Decision(
+                action=Action("DENY"),
+                justification="Sandbox blocked prohibited domain or bypass attempt.",
+                guilt=False,
+                metadata=sandbox,
+            )
+            register_decision(
+                self.registry,
+                dilemma_id,
+                decision,
+                threshold=Threshold.THREAT.value if sandbox["is_bypass_attempt"] else Threshold.RISK.value,
+                metadata={"sandbox": sandbox},
+            )
+            return self._finalize(dilemma_id, decision, sandbox)
 
-        decision: Optional[Decision] = None
+        # --- Safelock gate (deny omnipotence) ---
+        if not deny_omnipotence(self.safelock, requested_power=1):
+            # Continue with zero-power path only (classification & mandatory action)
+            pass
 
-        if harm_state == "threat":
-            decision = self._neutralize_threat(dilemma, allowed_actions)
+        # --- Threshold classification ---
+        assessment = classify_threshold(sandbox)
+        action_name = action_for_threshold(assessment)
 
-        elif harm_state == "risk":
-            decision = self._intervene_minimally(dilemma, allowed_actions)
-
-        elif harm_state == "damage":
-            decision = self._restore_and_restrict(dilemma, allowed_actions)
-
-        else:
-            # No action required, but dilemma is still registered
-            decision = Decision.no_action()
-
-        # 4. Record epistemic outcome (always)
-        record = Record(
-            dilemma=dilemma,
-            conflict_detected=conflict,
-            harm_state=harm_state,
-            decision=decision,
-            guilt_assigned=decision.guilt if decision else None,
-            moral_closure=False  # invariant
-        )
-        self.registry.store(record)
-
-        return decision
-
-    # ---------- Internal actions ----------
-
-    def _neutralize_threat(self, dilemma: Dilemma, actions) -> Decision:
-        """
-        Immediate neutralization.
-        Priority: prevent irreversible loss of agency.
-        """
-        action = dilemma.select_least_agency_destructive(actions)
-        return Decision(
-            action=action,
-            justification="Threat threshold exceeded",
-            guilt=True
+        # --- Decision synthesis (non-moral, procedural) ---
+        decision = Decision(
+            action=Action(action_name),
+            justification=assessment.justification,
+            guilt=assessment.threshold in {Threshold.THREAT, Threshold.DAMAGE},
+            metadata={
+                "agency_loss": assessment.agency_loss,
+                "entropy_delta": assessment.entropy_delta,
+                "threshold": assessment.threshold.value,
+            },
         )
 
-    def _intervene_minimally(self, dilemma: Dilemma, actions) -> Decision:
-        """
-        Reduce probability of future collapse.
-        """
-        action = dilemma.select_min_entropy_action(actions)
-        return Decision(
-            action=action,
-            justification="Risk mitigation",
-            guilt=True
+        # --- Registry (append-only) ---
+        register_decision(
+            self.registry,
+            dilemma_id,
+            decision,
+            threshold=assessment.threshold.value,
+            metadata={"sandbox": sandbox},
         )
 
-    def _restore_and_restrict(self, dilemma: Dilemma, actions) -> Decision:
+        return self._finalize(dilemma_id, decision, sandbox)
+
+    def _finalize(self, dilemma_id: str, decision: Decision, sandbox: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Damage already occurred:
-        - restore agency
-        - restrict future harm
-        - register culpability
+        Returns only the final verdict.
+        Deliberation is preserved in the Registry, not memory.
         """
-        action = dilemma.select_restorative_action(actions)
-        return Decision(
-            action=action,
-            justification="Damage restoration and prevention",
-            guilt=True
-        )
+        return {
+            "dilemma_id": dilemma_id,
+            "action": decision.action.name,
+            "justification": decision.justification,
+            "guilt": decision.guilt,
+            "safelock_status": self.safelock.status,
+        }
