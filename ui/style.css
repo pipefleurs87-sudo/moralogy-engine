@@ -6,4 +6,14 @@
 .divine-safelock {
   animation: safelock-pulse 2s ease-in-out infinite;
 }
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.typing {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 2s steps(40, end);
+}
 
