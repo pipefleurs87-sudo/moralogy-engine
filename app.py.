@@ -9,7 +9,7 @@ try:
         model_name = st.secrets["GROK_MODEL"]
         client = OpenAI(api_key=api_key, base_url="https://api.x.ai/v1")
     elif api_provider == "gemini":
-        import google.generativeai as genai
+import google.generativeai as genai
         api_key = st.secrets["GOOGLE_API_KEY"]
         model_name = st.secrets["GEMINI_MODEL"]
         genai.configure(api_key=api_key)
