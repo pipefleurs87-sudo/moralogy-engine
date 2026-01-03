@@ -20,6 +20,15 @@ Moralogy Engine is a deliberative moral system that does **not learn from conclu
 
 This repository is prepared for a public GitHub release and a Google Hackathon submission.
 
+### Design Constraint
+
+Some dilemmas **must remain open**.
+Forced resolution under incompatible axioms is considered a form of epistemic corruption.
+
+This engine records conflict, assigns responsibility, and executes
+damage-minimizing action **without pretending moral synthesis exists**.
+
+
 ---
 
 ## 🧠 Core Principles
