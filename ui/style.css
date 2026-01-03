@@ -1,19 +1,42 @@
-@keyframes safelock-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
+/* General panels */
+.panel {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 16px;
 }
 
+/* Panel titles */
+.panel-title {
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  color: #94a3b8;
+}
+
+/* Divine Safelock glow */
 .divine-safelock {
-  animation: safelock-pulse 2s ease-in-out infinite;
-}
-@keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
+  box-shadow:
+    0 0 20px rgba(16, 185, 129, 0.2),
+    inset 0 0 40px rgba(16, 185, 129, 0.05);
 }
 
+/* Typing effect */
 .typing {
-  overflow: hidden;
-  white-space: nowrap;
-  animation: typing 2s steps(40, end);
+  font-family: monospace;
+  white-space: pre-wrap;
 }
 
+/* Safelock states */
+.safelock-stable {
+  color: #10b981;
+}
+
+.safelock-warning {
+  color: #f59e0b;
+}
+
+.safelock-breach {
+  color: #ef4444;
+}
