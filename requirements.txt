@@ -1,12 +1,12 @@
 # Moralogy Engine - Backend Requirements
-# Python 3.10+
+# Python 3.8+ compatible
 
 # Web Framework
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
 
-# Data Models
-pydantic==2.5.3
+# Data Models (versión sin compilación)
+pydantic==1.10.13
 
 # Google Gemini AI - CRITICAL for hackathon
 google-generativeai==0.3.2
@@ -16,5 +16,5 @@ python-multipart==0.0.6
 python-dotenv==1.0.0
 
 # Optional: For development/testing
-httpx==0.26.0
-pytest==7.4.4
+httpx==0.25.2
+pytest==7.4.3
