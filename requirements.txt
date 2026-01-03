@@ -1,1 +1,20 @@
-streamlit==1.52.2
+# Moralogy Engine - Backend Requirements
+# Python 3.10+
+
+# Web Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+
+# Data Models
+pydantic==2.5.3
+
+# Google Gemini AI - CRITICAL for hackathon
+google-generativeai==0.3.2
+
+# Utilities
+python-multipart==0.0.6
+python-dotenv==1.0.0
+
+# Optional: For development/testing
+httpx==0.26.0
+pytest==7.4.4
