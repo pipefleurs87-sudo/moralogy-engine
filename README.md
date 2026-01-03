@@ -1,4 +1,16 @@
-# moralogy-engine
+## Epistemic Status
+
+**Project Type:** Epistemic Prototype  
+**Claim Scope:** Deliberation without moral closure  
+**Non-Goals:** Moral optimization, omnipotent resolution, reward maximization
+
+This system does **not** attempt to solve morality.
+It preserves moral conflict when no non-arbitrary synthesis exists
+and enforces action via minimal-intervention thresholds.
+
+Unresolvable dilemmas are treated as epistemic artifacts,
+not system failures.
+
 Objective AI ethics evaluation using Moralogy Framework + Google Gemini API
 # Moralogy Engine
 
