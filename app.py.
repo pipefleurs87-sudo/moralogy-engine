@@ -1,4 +1,13 @@
 import sys
+import os
+
+# Parche temporal para Python 3.13 + Pydantic compatibility
+if sys.version_info >= (3, 13):
+    os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
+    import warnings
+    warnings.filterwarnings('ignore', category=DeprecationWarning)
+
+# ... resto de tu código aquíimport sys
 if sys.version_info >= (3, 13):
     import warnings
     warnings.filterwarnings('ignore', category=DeprecationWarning)import streamlit as st
