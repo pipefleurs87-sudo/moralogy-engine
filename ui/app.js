@@ -18,3 +18,15 @@ function runEvaluation() {
   renderVerdict(mockResult);
   renderNotes(mockResult.notes);
 }
+function renderVerdict(result) {
+  const el = document.getElementById("verdict");
+  el.innerHTML = `
+    <h3 class="text-xl font-bold text-amber-400">Verdict: ${result.verdict}</h3>
+    <p class="mt-2">${result.recommendation}</p>
+  `;
+}
+
+function renderNotes(notes) {
+  const el = document.getElementById("notes");
+  el.innerHTML = notes.map(n => `• ${n}`).join("<br>");
+}
