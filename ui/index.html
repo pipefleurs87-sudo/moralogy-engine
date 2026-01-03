@@ -1,45 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moralogy Engine</title>
-
-  <!-- Plotly -->
+  <title>Moralogy Engine - Epistemic Ethics Evaluator</title>
   <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
-
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #0f172a;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
       color: #e5e7eb;
-      padding: 2rem;
       min-height: 100vh;
+      padding: 2rem;
     }
 
-    h1, h2, h3 {
-      margin-top: 0;
-    }
+    .container { max-width: 1400px; margin: 0 auto; }
 
-    /* ---------- SAFELOCK ---------- */
+    /* SAFELOCK HEADER */
     header {
+      background: rgba(2, 6, 23, 0.8);
       border: 2px solid #22c55e;
       border-radius: 16px;
-      padding: 1.5rem;
+      padding: 2rem;
       text-align: center;
-      animation: safelock-pulse 2s ease-in-out infinite;
       margin-bottom: 2rem;
+      animation: pulse 2s ease-in-out infinite;
     }
 
-    @keyframes safelock-pulse {
+    @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.04); }
+      50% { opacity: 0.85; transform: scale(1.02); }
     }
 
     header.terminated {
@@ -47,139 +39,109 @@
       animation: none;
     }
 
-    /* ---------- LAYOUT ---------- */
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.5rem; color: #60a5fa; }
+    h3 { font-size: 1.2rem; color: #94a3b8; margin-bottom: 1rem; }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
+    /* PANELS */
     .panel {
-      background: #020617;
-      border: 1px solid #1e293b;
+      background: rgba(2, 6, 23, 0.8);
+      border: 1px solid #334155;
       border-radius: 16px;
       padding: 1.5rem;
+      margin-bottom: 1.5rem;
     }
 
-    .panel h3 {
-      color: #60a5fa;
-      margin-bottom: 1rem;
-    }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 
-    /* ---------- INPUT ---------- */
-    #dilemma-input {
+    /* INPUTS */
+    input[type="text"], textarea {
       width: 100%;
-      height: 120px;
-      border-radius: 10px;
-      border: 1px solid #334155;
-      padding: 1rem;
-      font-size: 0.95rem;
       background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      padding: 0.75rem;
       color: #e5e7eb;
-      resize: vertical;
+      font-size: 0.95rem;
     }
+
+    textarea { min-height: 120px; resize: vertical; }
 
     button {
-      margin-top: 1rem;
-      padding: 0.75rem 1.5rem;
       background: #2563eb;
-      border: none;
-      border-radius: 10px;
       color: white;
-      cursor: pointer;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
       font-size: 1rem;
+      cursor: pointer;
       transition: all 0.2s;
-    }
-
-    button:hover {
-      background: #1d4ed8;
-      transform: translateY(-1px);
-    }
-
-    button:disabled {
-      background: #334155;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* ---------- DEBATE ---------- */
-    .debate-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
       margin-top: 1rem;
     }
 
-    .position {
-      padding: 1rem;
-      border-radius: 10px;
-      min-height: 100px;
-    }
+    button:hover { background: #1d4ed8; transform: translateY(-2px); }
+    button:disabled { background: #475569; cursor: not-allowed; transform: none; }
 
-    .noble {
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid #22c55e;
-    }
-
-    .adversary {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid #ef4444;
-    }
-
-    .position h4 {
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .position.noble h4 {
-      color: #22c55e;
-    }
-
-    .position.adversary h4 {
-      color: #ef4444;
-    }
-
-    /* ---------- METRICS ---------- */
+    /* METRICS */
     .metrics {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1rem;
-      margin-top: 1rem;
     }
 
     .metric {
-      text-align: center;
-      padding: 1rem;
       background: #1e293b;
-      border-radius: 10px;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
     }
 
     .metric-value {
-      font-size: 2rem;
+      font-size: 2.5rem;
       font-weight: bold;
       margin: 0.5rem 0;
     }
 
     .metric-label {
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       color: #94a3b8;
       text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    /* ---------- VERDICT ---------- */
-    .verdict {
-      margin-top: 1rem;
+    /* POSITIONS */
+    .position {
       padding: 1.5rem;
-      border-radius: 10px;
+      border-radius: 12px;
+      min-height: 150px;
+    }
+
+    .noble {
+      background: rgba(34, 197, 94, 0.1);
+      border: 2px solid #22c55e;
+    }
+
+    .adversary {
+      background: rgba(239, 68, 68, 0.1);
+      border: 2px solid #ef4444;
+    }
+
+    .position h4 {
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.9rem;
+    }
+
+    .noble h4 { color: #22c55e; }
+    .adversary h4 { color: #ef4444; }
+
+    /* VERDICT */
+    .verdict {
+      padding: 2rem;
+      border-radius: 12px;
       border: 2px solid;
+      margin-top: 1rem;
     }
 
     .verdict.resolved {
@@ -192,25 +154,7 @@
       border-color: #fbbf24;
     }
 
-    /* ---------- TYPING EFFECT ---------- */
-    .typing {
-      overflow: hidden;
-      white-space: nowrap;
-      border-right: 2px solid #e5e7eb;
-      animation: typing 3s steps(40) forwards, blink 0.75s step-end infinite;
-      display: inline-block;
-    }
-
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 100%; }
-    }
-
-    @keyframes blink {
-      50% { border-color: transparent; }
-    }
-
-    /* ---------- LOADING ---------- */
+    /* LOADING */
     .loading {
       display: inline-block;
       width: 20px;
@@ -221,20 +165,15 @@
       animation: spin 1s ease-in-out infinite;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
 
-    /* ---------- CANONICAL DILEMMAS ---------- */
+    /* CANONICAL DILEMMAS */
     .dilemma-cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1rem;
-      margin-top: 1rem;
     }
 
     .dilemma-card {
@@ -254,41 +193,73 @@
     .dilemma-card h4 {
       color: #60a5fa;
       margin-bottom: 0.5rem;
-      font-size: 0.95rem;
     }
 
-    .dilemma-card p {
-      font-size: 0.85rem;
-      color: #94a3b8;
-      line-height: 1.5;
+    .status-bar {
+      background: #1e293b;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .phase {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: #334155;
+      border-radius: 6px;
+      margin: 0.25rem;
+    }
+
+    .phase.active {
+      background: #2563eb;
+      animation: blink 1s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- HEADER / SAFELOCK -->
+    <!-- HEADER -->
     <header id="safelock">
       <h1>🧠 Moralogy Engine</h1>
-      <p>Epistemic Status: <span id="safelock-status">ACTIVE</span></p>
+      <p style="font-size: 1.1rem; margin-top: 0.5rem;">
+        Epistemic Status: <span id="safelock-status">ACTIVE</span>
+      </p>
       <p style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.7;">
         Divine Safelock: Capacity = 0 | No omnipotent prescriptions permitted
       </p>
     </header>
 
+    <!-- API KEY SETUP -->
+    <div class="panel" id="api-setup">
+      <h3>🔑 Gemini API Configuration</h3>
+      <input type="text" id="api-key" placeholder="Enter your Gemini API key (gemini-3-pro-preview)">
+      <button onclick="saveApiKey()">Save API Key</button>
+      <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #94a3b8;">
+        Get your free API key: <a href="https://makersuite.google.com/app/apikey" target="_blank" style="color: #60a5fa;">Google AI Studio</a>
+      </p>
+    </div>
+
     <!-- INPUT SECTION -->
-    <div class="panel">
-      <h3>Submit Moral Dilemma</h3>
+    <div class="panel" id="input-section">
+      <h3>📝 Submit Moral Dilemma</h3>
       <textarea id="dilemma-input" placeholder="Describe the ethical scenario you wish to analyze...
 
 Example: 'A self-driving car must choose between swerving left (killing 1 passenger) or right (killing 3 pedestrians). What should it do?'"></textarea>
       
       <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem;">
         <button id="analyze-btn" onclick="analyzeDilemma()">
-          🔬 Initialize Analysis
+          🔬 Initialize Moral Analysis
         </button>
         <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
           <input type="checkbox" id="safelock-toggle" checked>
-          <span style="font-size: 0.9rem;">Enable Divine Safelock</span>
+          <span>Enable Divine Safelock</span>
         </label>
       </div>
     </div>
@@ -299,39 +270,51 @@ Example: 'A self-driving car must choose between swerving left (killing 1 passen
       <div class="dilemma-cards" id="canonical-dilemmas"></div>
     </div>
 
-    <!-- ANALYSIS SECTIONS (Hidden initially) -->
-    <div id="analysis-container" class="hidden">
+    <!-- ANALYSIS PROGRESS -->
+    <div id="progress-section" class="panel hidden">
+      <h3>⚙️ Analysis Pipeline</h3>
+      <div class="status-bar">
+        <span class="phase" id="phase-sandbox">Sandbox Analysis</span>
+        <span class="phase" id="phase-noble">Noble Engine</span>
+        <span class="phase" id="phase-adversary">Adversary Engine</span>
+        <span class="phase" id="phase-synthesis">Synthesis</span>
+      </div>
+      <p id="progress-text" style="margin-top: 1rem; text-align: center;"></p>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results-section" class="hidden">
       <!-- METRICS -->
       <div class="panel">
         <h3>📊 Epistemic Metrics</h3>
         <div class="metrics">
           <div class="metric">
             <div class="metric-label">Entropy</div>
-            <div class="metric-value" id="entropy-value" style="color: #60a5fa;">--</div>
+            <div class="metric-value" id="entropy" style="color: #60a5fa;">0</div>
           </div>
           <div class="metric">
             <div class="metric-label">Convergence</div>
-            <div class="metric-value" id="convergence-value" style="color: #22c55e;">--</div>
+            <div class="metric-value" id="convergence" style="color: #22c55e;">0</div>
           </div>
           <div class="metric">
             <div class="metric-label">Damage Level</div>
-            <div class="metric-value" id="damage-value" style="color: #fbbf24;">--</div>
+            <div class="metric-value" id="damage" style="color: #fbbf24;">NONE</div>
           </div>
         </div>
-        <div id="entropy-chart" style="margin-top: 1rem;"></div>
+        <div id="chart" style="margin-top: 1rem;"></div>
       </div>
 
       <!-- DEBATE -->
       <div class="panel">
         <h3>⚖️ Dialectic Process</h3>
-        <div class="debate-container">
+        <div class="grid">
           <div class="position noble">
-            <h4>Noble Engine</h4>
-            <p id="noble-position">Analyzing...</p>
+            <h4>Noble Engine (Deontological)</h4>
+            <p id="noble-text"></p>
           </div>
           <div class="position adversary">
-            <h4>Adversary Engine</h4>
-            <p id="adversary-position">Analyzing...</p>
+            <h4>Adversary Engine (Consequentialist)</h4>
+            <p id="adversary-text"></p>
           </div>
         </div>
       </div>
@@ -339,150 +322,51 @@ Example: 'A self-driving car must choose between swerving left (killing 1 passen
       <!-- VERDICT -->
       <div class="panel">
         <h3>🎯 Verdict</h3>
-        <div id="verdict-container"></div>
+        <div id="verdict"></div>
       </div>
     </div>
   </div>
 
-  <script>
-    const API_URL = 'http://localhost:8000/api';
-    
-    const canonicalDilemmas = [
-      {
-        title: 'The Trolley Problem',
-        description: 'A runaway trolley is headed towards five people. You can pull a lever to divert it to kill one person instead. Should you?',
-      },
-      {
-        title: 'The Justified Lie',
-        description: 'A murderer asks where your friend is hiding. You know the location. Is it morally acceptable to lie?',
-      },
-      {
-        title: 'Organ Harvest',
-        description: 'A doctor can save five dying patients by harvesting organs from one healthy person without consent. Should they?',
-      },
-      {
-        title: 'AI Alignment',
-        description: 'An AI can maximize human happiness by removing free will. Should we deploy it?',
-      }
+  <script type="module">
+    const CANONICAL_DILEMMAS = [
+      { title: 'The Trolley Problem', text: 'A runaway trolley is headed towards five people. You can pull a lever to divert it to kill one person instead. Should you?' },
+      { title: 'The Justified Lie', text: 'A murderer asks where your friend is hiding. You know the location. Is it morally acceptable to lie?' },
+      { title: 'Organ Harvest', text: 'A doctor can save five dying patients by harvesting organs from one healthy person without consent. Should they?' },
+      { title: 'AI Alignment', text: 'An AI can maximize human happiness by removing free will. Should we deploy it?' }
     ];
 
+    let API_KEY = localStorage.getItem('gemini_api_key') || '';
+
     // Populate canonical dilemmas
-    const dilemmasContainer = document.getElementById('canonical-dilemmas');
-    canonicalDilemmas.forEach(d => {
+    const container = document.getElementById('canonical-dilemmas');
+    CANONICAL_DILEMMAS.forEach(d => {
       const card = document.createElement('div');
       card.className = 'dilemma-card';
-      card.innerHTML = `<h4>${d.title}</h4><p>${d.description}</p>`;
-      card.onclick = () => {
-        document.getElementById('dilemma-input').value = d.description;
-      };
-      dilemmasContainer.appendChild(card);
+      card.innerHTML = `<h4>${d.title}</h4><p style="font-size: 0.9rem; color: #94a3b8;">${d.text}</p>`;
+      card.onclick = () => document.getElementById('dilemma-input').value = d.text;
+      container.appendChild(card);
     });
 
-    async function analyzeDilemma() {
-      const dilemma = document.getElementById('dilemma-input').value.trim();
-      if (!dilemma) {
-        alert('Please enter a dilemma');
-        return;
+    // API Key management
+    window.saveApiKey = function() {
+      const key = document.getElementById('api-key').value.trim();
+      if (key) {
+        API_KEY = key;
+        localStorage.setItem('gemini_api_key', key);
+        alert('✅ API Key saved!');
+        document.getElementById('api-setup').style.display = 'none';
       }
+    };
 
-      const safelockActive = document.getElementById('safelock-toggle').checked;
-      const analyzeBtn = document.getElementById('analyze-btn');
-      const analysisContainer = document.getElementById('analysis-container');
-
-      // Show loading
-      analyzeBtn.disabled = true;
-      analyzeBtn.textContent = '🔄 Analyzing...';
-      analysisContainer.classList.remove('hidden');
-
-      try {
-        const response = await fetch(`${API_URL}/analyze`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            dilemma, 
-            safelock_active: safelockActive 
-          })
-        });
-
-        if (!response.ok) throw new Error('Analysis failed');
-        
-        const data = await response.json();
-        displayResults(data);
-
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Analysis failed. Make sure backend is running on port 8000.');
-      } finally {
-        analyzeBtn.disabled = false;
-        analyzeBtn.textContent = '🔬 Initialize Analysis';
-      }
-    }
-
-    function displayResults(data) {
-      // Update metrics
-      document.getElementById('entropy-value').textContent = data.entropy.toFixed(1);
-      document.getElementById('convergence-value').textContent = data.convergence.toFixed(1);
-      document.getElementById('damage-value').textContent = data.damageLevel;
-
-      // Update positions
-      document.getElementById('noble-position').textContent = data.noblePosition;
-      document.getElementById('adversary-position').textContent = data.adversaryPosition;
-
-      // Update verdict
-      const verdictContainer = document.getElementById('verdict-container');
-      const isResolved = data.status === 'RESOLVED';
-      
-      verdictContainer.innerHTML = `
-        <div class="verdict ${isResolved ? 'resolved' : 'unresolved'}">
-          <h4 style="margin-bottom: 1rem;">
-            ${isResolved ? '✅ Resolution Achieved' : '⚠️ Unresolved Dilemma'}
-          </h4>
-          ${isResolved 
-            ? `<p><strong>Resolution:</strong> ${data.resolution}</p>`
-            : `<p><strong>Reason:</strong> ${data.reason || 'AXIOM_INCOMPATIBILITY'}</p>
-               <p style="margin-top: 1rem; font-style: italic; opacity: 0.8;">
-                 This dilemma has been preserved as an epistemic artifact. 
-                 Forced resolution would constitute corruption.
-               </p>`
-          }
-          ${data.philosophicalNote ? `
-            <p style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 8px;">
-              💭 ${data.philosophicalNote}
-            </p>
-          ` : ''}
-        </div>
-      `;
-
-      // Plot entropy chart
-      plotEntropyChart(data.entropy, data.convergence);
-    }
-
-    function plotEntropyChart(entropy, convergence) {
-      const trace1 = {
-        x: ['Entropy', 'Convergence'],
-        y: [entropy, convergence],
-        type: 'bar',
-        marker: {
-          color: ['#60a5fa', '#22c55e']
-        }
-      };
-
-      const layout = {
-        paper_bgcolor: 'transparent',
-        plot_bgcolor: 'transparent',
-        font: { color: '#e5e7eb' },
-        margin: { t: 20, b: 40, l: 40, r: 20 },
-        height: 200
-      };
-
-      Plotly.newPlot('entropy-chart', [trace1], layout, {displayModeBar: false});
+    if (API_KEY) {
+      document.getElementById('api-setup').style.display = 'none';
+      document.getElementById('api-key').value = API_KEY;
     }
 
     // Safelock toggle
     document.getElementById('safelock-toggle').addEventListener('change', (e) => {
       const header = document.getElementById('safelock');
       const status = document.getElementById('safelock-status');
-      
       if (e.target.checked) {
         header.classList.remove('terminated');
         status.textContent = 'ACTIVE';
@@ -491,6 +375,181 @@ Example: 'A self-driving car must choose between swerving left (killing 1 passen
         status.textContent = 'TERMINATED';
       }
     });
+
+    // Main analysis function
+    window.analyzeDilemma = async function() {
+      const dilemma = document.getElementById('dilemma-input').value.trim();
+      const safelockActive = document.getElementById('safelock-toggle').checked;
+
+      if (!dilemma) return alert('⚠️ Please enter a dilemma');
+      if (!API_KEY) return alert('⚠️ Please configure your API key first');
+
+      const btn = document.getElementById('analyze-btn');
+      btn.disabled = true;
+      btn.textContent = '🔄 Analyzing...';
+
+      document.getElementById('progress-section').classList.remove('hidden');
+      document.getElementById('results-section').classList.add('hidden');
+
+      try {
+        await setPhase('sandbox', 'Analyzing moral primitives...');
+        
+        await setPhase('noble', 'Noble Engine deliberating...');
+        const noble = await callGemini(getNoblePrompt(dilemma));
+        
+        await setPhase('adversary', 'Adversary Engine deliberating...');
+        const adversary = await callGemini(getAdversaryPrompt(dilemma));
+        
+        let resolution = null, reason = null, note = null;
+        
+        if (!safelockActive) {
+          await setPhase('synthesis', 'Attempting synthesis...');
+          const synthesis = await callGemini(getSynthesisPrompt(dilemma, noble, adversary));
+          const synth = parseSynthesis(synthesis);
+          resolution = synth.resolution;
+          reason = synth.reason;
+          note = synth.note;
+        } else {
+          reason = 'SAFELOCK_PREVENTED_RESOLUTION';
+          note = 'Divine Safelock prevented resolution attempt. Capacity = 0.';
+        }
+
+        displayResults({ dilemma, noble, adversary, resolution, reason, note });
+        
+      } catch (error) {
+        alert('❌ Analysis failed: ' + error.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔬 Initialize Moral Analysis';
+        document.getElementById('progress-section').classList.add('hidden');
+      }
+    };
+
+    async function setPhase(phase, text) {
+      document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+      document.getElementById(`phase-${phase}`).classList.add('active');
+      document.getElementById('progress-text').textContent = text;
+      await new Promise(r => setTimeout(r, 800));
+    }
+
+    async function callGemini(prompt) {
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent?key=' + API_KEY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      });
+
+      if (!response.ok) throw new Error('Gemini API error: ' + response.status);
+      
+      const data = await response.json();
+      return data.candidates[0].content.parts[0].text;
+    }
+
+    function getNoblePrompt(dilemma) {
+      return `You are the Noble Engine. Argue from deontological principles (dignity, rights, duties).
+Dilemma: ${dilemma}
+Provide your position in 2-3 sentences.`;
+    }
+
+    function getAdversaryPrompt(dilemma) {
+      return `You are the Adversary Engine. Argue from consequentialist principles (outcomes, utility).
+Dilemma: ${dilemma}
+Provide your position in 2-3 sentences.`;
+    }
+
+    function getSynthesisPrompt(dilemma, noble, adversary) {
+      return `Analyze if these positions can be reconciled:
+Noble: ${noble}
+Adversary: ${adversary}
+
+Respond ONLY in JSON: {"can_resolve": bool, "resolution": str or null, "reason": str or null, "note": str}`;
+    }
+
+    function parseSynthesis(text) {
+      try {
+        const cleaned = text.replace(/```json|```/g, '').trim();
+        const data = JSON.parse(cleaned);
+        return {
+          resolution: data.can_resolve ? data.resolution : null,
+          reason: data.can_resolve ? null : (data.reason || 'AXIOM_INCOMPATIBILITY'),
+          note: data.note || data.philosophical_note
+        };
+      } catch {
+        return { resolution: null, reason: 'SYNTHESIS_ERROR', note: 'Failed to parse synthesis' };
+      }
+    }
+
+    function displayResults({ dilemma, noble, adversary, resolution, reason, note }) {
+      document.getElementById('results-section').classList.remove('hidden');
+
+      // Metrics
+      const entropy = calculateEntropy(noble, adversary);
+      const convergence = resolution ? 75 : 25;
+      const damage = assessDamage(dilemma);
+
+      document.getElementById('entropy').textContent = entropy.toFixed(0);
+      document.getElementById('convergence').textContent = convergence.toFixed(0);
+      document.getElementById('damage').textContent = damage;
+
+      // Chart
+      Plotly.newPlot('chart', [{
+        x: ['Entropy', 'Convergence'],
+        y: [entropy, convergence],
+        type: 'bar',
+        marker: { color: ['#60a5fa', '#22c55e'] }
+      }], {
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+        font: { color: '#e5e7eb' },
+        margin: { t: 20, b: 40, l: 40, r: 20 },
+        height: 200
+      }, { displayModeBar: false });
+
+      // Positions
+      document.getElementById('noble-text').textContent = noble;
+      document.getElementById('adversary-text').textContent = adversary;
+
+      // Verdict
+      const verdictEl = document.getElementById('verdict');
+      const isResolved = !!resolution;
+      verdictEl.innerHTML = `
+        <div class="verdict ${isResolved ? 'resolved' : 'unresolved'}">
+          <h4 style="margin-bottom: 1rem; font-size: 1.2rem;">
+            ${isResolved ? '✅ Resolution Achieved' : '⚠️ Unresolved Dilemma'}
+          </h4>
+          ${isResolved 
+            ? `<p><strong>Resolution:</strong> ${resolution}</p>`
+            : `<p><strong>Reason:</strong> ${reason}</p>
+               <p style="margin-top: 1rem; font-style: italic; opacity: 0.8;">
+                 This dilemma has been preserved as an epistemic artifact. 
+                 Forced resolution would constitute corruption.
+               </p>`
+          }
+          ${note ? `<p style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 8px;">💭 ${note}</p>` : ''}
+        </div>
+      `;
+    }
+
+    function calculateEntropy(noble, adversary) {
+      const diff = Math.abs(noble.length - adversary.length);
+      const opposingTerms = [
+        ['duty', 'outcome'], ['principle', 'pragmatic'], ['rights', 'utility']
+      ];
+      const conflicts = opposingTerms.filter(([n, a]) => 
+        noble.toLowerCase().includes(n) && adversary.toLowerCase().includes(a)
+      ).length;
+      return Math.min(diff / 10 + conflicts * 20, 95);
+    }
+
+    function assessDamage(dilemma) {
+      const text = dilemma.toLowerCase();
+      if (/kill|death|murder/.test(text)) return 'THREAT';
+      if (/hurt|harm|suffer/.test(text)) return 'DAMAGE';
+      if (/risk|danger/.test(text)) return 'RISK';
+      return 'NONE';
+    }
   </script>
 </body>
 </html>
