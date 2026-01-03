@@ -1,10 +1,15 @@
 import streamlit as st
+from pathlib import Path
 
 st.set_page_config(layout="wide")
 
-st.markdown("## Moralogy Engine")
+html_path = Path("ui/index.html")
+
+with open(html_path, "r", encoding="utf-8") as f:
+    html = f.read()
 
 st.components.v1.html(
-    "<h3>UI EMBED OK</h3><p>Streamlit renderiza HTML.</p>",
-    height=200
+    html,
+    height=900,
+    scrolling=True
 )
