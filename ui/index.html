@@ -1,43 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Morology Engine</title>
+  <meta charset="UTF-8" />
+  <title>Morology Engine</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 2rem;
+    }
 
-<!-- Tailwind CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
+    header {
+      border: 2px solid #22c55e;
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      animation: safelock-pulse 2s ease-in-out infinite;
+    }
 
-<!-- Plotly -->
-<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    @keyframes safelock-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
 
-<style>
-body {
-  background-color: #020617;
-  color: #e5e7eb;
-  font-family: system-ui;
-}
-.divine-safelock {
-  animation: pulse 3s infinite;
-}
-@keyframes pulse {
-  0% { opacity: 0.6 }
-  50% { opacity: 1 }
-  100% { opacity: 0.6 }
-}
-</style>
+    .panel {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #020617;
+      border-radius: 12px;
+    }
+  </style>
 </head>
 
-<body class="p-6">
+<body>
+  <header>
+    <h1>Divine Safelock</h1>
+    <p>Status: ACTIVE</p>
+  </header>
 
-<header class="text-center divine-safelock mb-6">
-  <h1 class="text-3xl font-bold text-emerald-400">MORALOGY ENGINE</h1>
-  <p class="opacity-70">Deterministic Moral Reasoning System</p>
-</header>
-
-<section class="mb-6">
-  <textarea id="prompt"
-    class="w-full p-3 bg-slate-800 rounded"
-    placeholder="Enter moral dilemma..."></textarea>
-
-  <button onclick="runEvaluation()"
-    class="mt-4 px-6 py-2 bg-
+  <div class="panel">
+    <h2>Morology Engine</h2>
+    <p>HTML loaded from /ui/index.html</p>
+  </div>
+</body>
+</html>
